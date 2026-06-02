@@ -1,218 +1,184 @@
-# 7-Eleven Vietnam — Retail Order Management
-Bài test kỹ thuật cho vị trí **Java Engineer — 7-Eleven Vietnam**.
+# 7-Eleven Vietnam — Retail Order Management System
 
-Web app quản lý sản phẩm và đơn hàng, xây dựng bằng Spring Boot 3 + Thymeleaf + PostgreSQL.
-
----
-
-## Mục lục
-- [Tech Stack](#tech-stack)
-- [Tính năng](#tính-năng)
-- [Cấu trúc database](#cấu-trúc-database)
-- [Business rules quan trọng](#business-rules-quan-trọng)
-- [Cài đặt & chạy local](#cài-đặt--chạy-local)
-- [Các URL chính](#các-url-chính)
-- [Chạy test](#chạy-test)
-- [Cấu trúc project](#cấu-trúc-project)
-- [Hướng phát triển thêm](#hướng-phát-triển-thêm)
+**Technical Test Submission**  
+**Candidate:** Vo Thanh Truong Long  
+**Position:** Fresher Java Engineer  
 
 ---
 
-## Tech Stack
+## 📋 Overview
 
-**Backend**
-- Java 17
-- Spring Boot 3.5.14 (Spring MVC, Spring Data JPA)
-- PostgreSQL (production) / H2 (test)
-- Lombok
-- Maven
-
-**Frontend**
-- Thymeleaf (server-side rendering)
-- Tailwind CSS
-- Font Awesome 6
-
-**Testing**
-- JUnit 5 + Mockito (unit test tầng Service)
-- H2 in-memory (không cần PostgreSQL khi test)
+Web-based retail order management system built with **Spring Boot 3** + **Thymeleaf** + **PostgreSQL**.
 
 ---
 
-## Tính năng
+## 🛠️ Tech Stack
 
-**Admin — Quản lý sản phẩm**
-- Xem danh sách tất cả sản phẩm (kể cả INACTIVE)
-- Xem chi tiết, tạo mới, cập nhật sản phẩm
-- Xóa mềm: set `status = INACTIVE` thay vì xóa khỏi DB
-
-**User — Đặt hàng**
-- Xem danh sách sản phẩm đang ACTIVE
-- Tạo đơn hàng với nhiều sản phẩm
-
-**Admin — Quản lý đơn hàng**
-- Xem danh sách tất cả đơn hàng
-- Xem chi tiết từng đơn (sản phẩm, số lượng, tiền)
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | Java 17, Spring Boot 3.5.14, Spring Data JPA |
+| **Frontend** | Thymeleaf, HTML5, CSS3 (Tailwind) |
+| **Database** | PostgreSQL (production), H2 (test) |
+| **Build** | Maven |
+| **Testing** | JUnit 5, Mockito |
 
 ---
 
-## Cấu trúc database
+## ✨ Features
+
+### 1️⃣ Admin — Product Management
+- ✅ List all products (including inactive)
+- ✅ View product details
+- ✅ Create new product
+- ✅ Update product
+- ✅ Delete product (soft delete — sets `status = INACTIVE`)
+
+### 2️⃣ User — Order Placement
+- ✅ Browse active products
+- ✅ Create order with multiple items
+- ✅ Real-time stock validation
+- ✅ Backend-calculated total amount
+
+### 3️⃣ Admin — Order Management
+- ✅ View all orders
+- ✅ View order details
+
+---
+
+## 🗄️ Database Design
 
 ```
-Product          OrderItem         Order
---------         ---------         -----
-id (PK)    ◄─── productId (FK)     id (PK)
-name             orderId (FK) ───► customerName
-sku (UNIQUE)     quantity           customerPhone
-price            unitPrice          totalAmount
-stockQuantity    subtotal           status
-status                              createdAt
-createdAt
-updatedAt
+┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│   Product   │         │  OrderItem   │         │    Order    │
+├─────────────┤         ├──────────────┤         ├─────────────┤
+│ id (PK)     │◄────────│ productId(FK)│         │ id (PK)     │
+│ name        │         │ orderId (FK) │────────►│ customerName│
+│ sku (UNIQUE)│         │ quantity     │         │ customerPhone│
+│ price       │         │ unitPrice    │         │ totalAmount │
+│ stockQuantity│        │ subtotal     │         │ status      │
+│ status      │         └──────────────┘         │ createdAt   │
+│ createdAt   │                                  └─────────────┘
+│ updatedAt   │
+└─────────────┘
 ```
 
-> **Tại sao lưu `unitPrice` trong OrderItem?**  
-> Để snapshot giá tại thời điểm đặt hàng. Nếu sau này admin đổi giá sản phẩm, lịch sử đơn hàng cũ vẫn đúng.
+**Note:** `OrderItem.unitPrice` stores product price at order creation time to preserve historical pricing.
 
 ---
 
-## Cài đặt & chạy local
+## 🔐 Business Rules
 
-### Yêu cầu
+### Product Management
+- Soft delete: set `status = INACTIVE` instead of deleting from database
+- Inactive products hidden from user view but remain in order history
+
+### Order Validation
+1. Product must exist
+2. Product must be `ACTIVE`
+3. Quantity > 0
+4. Quantity ≤ available stock
+5. Backend calculates total (frontend values ignored)
+6. Stock decreases after successful order
+
+---
+
+## 🚀 Setup & Run
+
+### Prerequisites
 - Java 17+
 - PostgreSQL 12+
-- Maven (hoặc dùng `./mvnw` đã có sẵn)
+- Maven (or use `./mvnw`)
 
-### Bước 1 — Tạo database
+### Step 1: Create Database
 ```sql
 CREATE DATABASE seveneleven;
 ```
 
-### Bước 2 — Sửa config
-Mở `src/main/resources/application.properties`:
+### Step 2: Configure Connection
+Edit `src/main/resources/application.properties`:
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/seveneleven
 spring.datasource.username=postgres
 spring.datasource.password=your_password
 ```
 
-### Bước 3 — Chạy app
+### Step 3: Run
 ```bash
 # Windows
 .\mvnw.cmd spring-boot:run
 
-# Linux / Mac
+# Linux/Mac
 ./mvnw spring-boot:run
 ```
-Hoặc dùng IntelliJ: Run `SevenRetailOrderManagementApplication.java`.
 
-App chạy ở: `http://localhost:8081`
+Or use your IDE to run `SevenRetailOrderManagementApplication.java`
 
----
-
-## Các URL chính
-
-| URL | Mô tả |
-|-----|-------|
-| `GET /products` | User — xem sản phẩm, đặt hàng |
-| `GET /admin/products` | Admin — quản lý sản phẩm |
-| `GET /admin/orders` | Admin — quản lý đơn hàng |
-
-**Chi tiết endpoints**
-
-| Method | URL | Chức năng |
-|--------|-----|-----------|
-| GET | `/admin/products` | Danh sách sản phẩm |
-| GET | `/admin/products/new` | Form tạo mới |
-| POST | `/admin/products` | Tạo sản phẩm |
-| GET | `/admin/products/{id}/edit` | Form sửa |
-| POST | `/admin/products/{id}` | Cập nhật |
-| POST | `/admin/products/{id}/delete` | Xóa mềm |
-| GET | `/admin/orders` | Danh sách đơn hàng |
-| GET | `/admin/orders/{id}` | Chi tiết đơn hàng |
-| GET | `/products` | Sản phẩm đang bán |
-| POST | `/orders` | Tạo đơn hàng |
+**Access:** `http://localhost:8081`
 
 ---
 
-## Chạy test
+## 🌐 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| **User** |
+| GET | `/products` | Browse products & place order |
+| POST | `/orders` | Submit order |
+| **Admin** |
+| GET | `/admin/products` | Manage products |
+| GET | `/admin/products/new` | Create product form |
+| POST | `/admin/products` | Save new product |
+| GET | `/admin/products/{id}/edit` | Edit product form |
+| POST | `/admin/products/{id}` | Update product |
+| POST | `/admin/products/{id}/delete` | Soft delete |
+| GET | `/admin/orders` | View orders |
+| GET | `/admin/orders/{id}` | Order details |
+
+---
+
+## 🧪 Testing
 
 ```bash
-# Không cần PostgreSQL — dùng H2 in-memory
 .\mvnw.cmd test
 ```
 
-**ProductServiceTest**
-| Test | Kịch bản |
-|------|----------|
-| `testGetAllProducts` | Trả về tất cả sản phẩm |
-| `testGetActiveProducts` | Chỉ trả về sản phẩm ACTIVE |
-| `testCreateProduct_success` | Tạo thành công |
-| `testCreateProduct_duplicateSku` | Ném BusinessException khi SKU trùng |
-| `testUpdateProduct_success` | Cập nhật thành công |
-| `testDeleteProduct` | Set status = INACTIVE |
+**ProductServiceTest** (6 tests)
+- Get all products
+- Get active products only
+- Create product
+- Handle duplicate SKU
+- Update product
+- Soft delete
 
-**OrderServiceTest**
-| Test | Kịch bản |
-|------|----------|
-| `testCreateOrder_success` | Tạo đơn, trừ tồn kho |
-| `testCreateOrder_insufficientStock` | Ném BusinessException khi hết hàng |
-| `testCreateOrder_inactiveProduct` | Ném BusinessException khi sản phẩm INACTIVE |
-| `testCreateOrder_totalAmountCalculation` | Backend tính đúng tổng tiền |
+**OrderServiceTest** (4 tests)
+- Create order & decrease stock
+- Reject insufficient stock
+- Reject inactive product
+- Verify total calculation
 
 ---
 
-## Cấu trúc project
+## 📁 Project Structure
 
 ```
 src/main/java/com/seveneleven/
 ├── SevenRetailOrderManagementApplication.java
-├── constants/
-│   ├── MessageConstants.java    ← chuỗi thông báo dùng chung
-│   └── ViewConstants.java       ← đường dẫn view dùng chung
-├── controller/
-│   ├── BaseController.java      ← helper dùng chung cho controller
-│   ├── AdminProductController.java
-│   ├── AdminOrderController.java
-│   └── UserController.java
-├── dto/
-│   ├── ProductRequest.java
-│   ├── ProductResponse.java
-│   ├── OrderRequest.java
-│   └── OrderItemRequest.java
-├── entity/
-│   ├── Product.java
-│   ├── Order.java
-│   └── OrderItem.java
-├── exception/
-│   ├── GlobalExceptionHandler.java   ← @ControllerAdvice xử lý lỗi chung
-│   ├── BusinessException.java
-│   └── ResourceNotFoundException.java
-├── mapper/
-│   └── ProductMapper.java       ← convert Entity ↔ DTO
-├── repository/
-│   ├── ProductRepository.java
-│   └── OrderRepository.java
-└── service/
-    ├── ProductService.java
-    └── OrderService.java
+├── constants/          # Shared constants
+├── controller/         # MVC controllers
+├── dto/                # Request/Response objects
+├── entity/             # JPA entities
+├── exception/          # Custom exceptions + handler
+├── mapper/             # Entity ↔ DTO conversion
+├── repository/         # Data access
+└── service/            # Business logic
 ```
 
 ---
 
-## Hướng phát triển thêm
+## 👤 Contact
 
-| Tính năng | Công nghệ |
-|-----------|-----------|
-| Cache sản phẩm | Redis |
-| Async order events | Kafka / RabbitMQ |
-| Đăng nhập / phân quyền | Spring Security + JWT |
-| Phân trang & tìm kiếm | Spring Data Pageable |
-| Containerize full stack | Docker Compose |
-| CI/CD tự động | GitHub Actions |
-| Monitoring | Prometheus + Grafana |
+**Vo Thanh Truong Long**  
+📞 0364964897  
+✉️ longvo04100000@gmail.com
 
----
-
-## Tác giả
-
-**Vo Thanh Truong Long** — Ứng tuyển vị trí Java Engineer tại 7-Eleven Vietnam
+**Applied for:** Fresher Java Engineer — 7-Eleven Vietnam
