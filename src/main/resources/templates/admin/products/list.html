@@ -154,7 +154,7 @@
     </div>
 
     <!-- Pagination -->
-    <div th:if="${totalPages > 1}" class="flex justify-center items-center gap-2 mt-8 fade-in">
+    <div th:if="${totalPages != null and totalPages > 1}" class="flex justify-center items-center gap-2 mt-8 fade-in">
         <a th:if="${currentPage > 0}"
            th:href="@{/admin/products(page=${currentPage - 1})}"
            class="btn-modern bg-white/10 text-white text-sm">
@@ -173,7 +173,7 @@
         </a>
     </div>
     <p class="text-center text-gray-400 text-sm mt-3 fade-in"
-       th:text="'Total: ' + ${totalElements} + ' products'"></p>
+       th:text="'Total: ' + ${totalElements != null ? totalElements : #lists.size(products)} + ' products'"></p>
 
 </div>
 

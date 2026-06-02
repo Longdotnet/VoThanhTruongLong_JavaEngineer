@@ -16,7 +16,7 @@ public final class MessageConstants {
     public static final String PRODUCT_DELETED_SUCCESS = "Product deactivated successfully!";
 
     // Order messages
-    public static final String ORDER_CREATED_SUCCESS_TEMPLATE = "Order #%d placed successfully! Total: %s VND";
+    public static final String ORDER_CREATED_SUCCESS_TEMPLATE = "Order placed successfully! Total: %s VND";
     public static final String ORDER_VALIDATION_ERROR = "Please fix the errors below.";
 
     // Generic messages

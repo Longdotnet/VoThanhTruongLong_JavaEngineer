@@ -41,8 +41,7 @@
 
                 <!-- Price -->
                 <div class="text-center mb-3">
-                    <span class="text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent"
-                          th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')}"></span>
+                    <span class="text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent" th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')}"></span>
                     <span class="text-lg text-gray-600 ml-1">VND</span>
                 </div>
 
@@ -61,7 +60,7 @@
         </div>
 
         <!-- Pagination -->
-        <div th:if="${totalPages > 1}" class="flex justify-center items-center gap-2 mt-8 fade-in">
+        <div th:if="${totalPages != null and totalPages > 1}" class="flex justify-center items-center gap-2 mt-8 fade-in">
             <a th:if="${currentPage > 0}"
                th:href="@{/products(page=${currentPage - 1})}"
                class="btn-modern btn-primary-modern text-sm">
@@ -80,12 +79,12 @@
             </a>
         </div>
         <p class="text-center text-gray-500 text-sm mt-3"
-           th:text="'Showing ' + ${#lists.size(products)} + ' of ' + ${totalElements} + ' products'"></p>
+           th:text="'Showing ' + ${#lists.size(products)} + ' of ' + ${totalElements != null ? totalElements : #lists.size(products)} + ' products'"></p>
 
     </div>
 
     <!-- Create Order Form -->
-    <div class="max-w-3xl mx-auto">
+    <div class="max-w-3xl mx-auto" th:if="${!#lists.isEmpty(products)}">
         <div class="glass-card-dark p-8 rounded-2xl shadow-2xl fade-in">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-white mb-2">
@@ -177,6 +176,14 @@
                     Place Order
                 </button>
             </form>
+        </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto" th:if="${#lists.isEmpty(products)}">
+        <div class="glass-card-dark p-8 rounded-2xl shadow-2xl fade-in text-center">
+            <i class="fas fa-shopping-cart text-5xl text-gray-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-white mb-2">Ordering is unavailable</h2>
+            <p class="text-gray-300">There are no active products to order right now.</p>
         </div>
     </div>
 </div>
