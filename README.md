@@ -158,6 +158,15 @@ Or use your IDE to run `SevenRetailOrderManagementApplication.java`
 
 ---
 
+## CI
+
+This project uses GitHub Actions for continuous integration.
+
+Workflow file: `.github/workflows/ci.yml`
+
+
+---
+
 ## 📁 Project Structure
 
 ```
