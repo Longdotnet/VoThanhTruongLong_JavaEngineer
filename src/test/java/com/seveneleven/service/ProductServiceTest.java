@@ -6,12 +6,14 @@ import com.seveneleven.entity.Product;
 import com.seveneleven.entity.ProductStatus;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.exception.ResourceNotFoundException;
+import com.seveneleven.mapper.ProductMapper;
 import com.seveneleven.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -26,6 +28,9 @@ class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Spy
+    private ProductMapper productMapper = new ProductMapper();
 
     @InjectMocks
     private ProductService productService;
