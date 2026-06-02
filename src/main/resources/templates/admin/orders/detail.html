@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head(title='Admin - Order Detail')}"></head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+
+<!-- Admin Navigation -->
+<nav th:replace="~{fragments/nav-admin :: nav-admin}"></nav>
+
+<div class="container mx-auto px-4 pb-12" style="max-width: 860px;">
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 fade-in">
+        <div class="flex items-center gap-4 min-w-0">
+            <a th:href="@{/admin/orders}"
+               class="btn-modern glass-card-dark text-white text-sm flex items-center gap-2 flex-shrink-0">
+                <i class="fas fa-arrow-left text-xs"></i> Back
+            </a>
+            <div class="min-w-0">
+                <h1 class="text-2xl md:text-3xl font-bold text-white leading-tight truncate">
+                    <i class="fas fa-receipt mr-2 text-purple-400"></i>Order
+                    <span class="font-mono text-purple-300" th:text="'#' + ${order.id}"></span>
+                </h1>
+                <p class="text-purple-300 text-xs mt-0.5">
+                    <i class="far fa-calendar-alt mr-1"></i>
+                    <span th:text="${#temporals.format(order.createdAt,'dd MMM yyyy · HH:mm')}"></span>
+                </p>
+            </div>
+        </div>
+        <!-- Status Badge -->
+        <span th:class="${order.status.name() == 'PENDING'} ? 'badge-modern badge-success-modern flex-shrink-0 text-sm' :
+                         (${order.status.name() == 'PROCESSING'} ? 'badge-modern flex-shrink-0 text-sm' :
+                         'badge-modern badge-inactive-modern flex-shrink-0 text-sm')"
+              style="white-space:nowrap; align-self:flex-start;"
+              th:text="${order.status}"></span>
+    </div>
+
+    <!-- Customer Information Card -->
+    <div class="product-card fade-in-delay-1 mb-6">
+        <h2 class="text-base font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 gradient-bg rounded-xl flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-user text-white text-sm"></i>
+            </span>
+            Customer Information
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Name -->
+            <div class="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-100">
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">
+                    <i class="fas fa-user mr-1"></i>Customer Name
+                </p>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="w-7 h-7 rounded-full gradient-bg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                         th:text="${#strings.substring(order.customerName, 0, 1).toUpperCase()}">?</div>
+                    <p class="font-bold text-gray-800 truncate" th:text="${order.customerName}"></p>
+                </div>
+            </div>
+            <!-- Phone -->
+            <div class="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">
+                    <i class="fas fa-phone mr-1"></i>Phone
+                </p>
+                <p class="font-bold text-gray-800 font-mono mt-2" th:text="${order.customerPhone}"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items Card -->
+    <div class="product-card fade-in-delay-2 mb-6">
+        <h2 class="text-base font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-box text-white text-sm"></i>
+            </span>
+            Order Items
+            <span class="badge-modern badge-success-modern ml-auto text-xs"
+                  th:text="${#lists.size(order.items)} + ' items'"></span>
+        </h2>
+
+        <!-- Desktop Table -->
+        <div class="hidden sm:block table-modern overflow-hidden">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-bold tracking-wider w-8">#</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold tracking-wider">Product</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold tracking-wider hide-mobile">SKU</th>
+                        <th class="px-4 py-3 text-right text-xs font-bold tracking-wider">Unit Price</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold tracking-wider">Qty</th>
+                        <th class="px-4 py-3 text-right text-xs font-bold tracking-wider">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item, stat : ${order.items}"
+                        class="border-t border-gray-100 hover:bg-purple-50 transition-colors">
+                        <td class="px-4 py-3 text-gray-400 text-xs font-mono" th:text="${stat.count}"></td>
+                        <td class="px-4 py-3">
+                            <p class="font-semibold text-gray-800 leading-tight" th:text="${item.product.name}"></p>
+                        </td>
+                        <td class="px-4 py-3 font-mono text-xs text-gray-400 hide-mobile"
+                            th:text="${item.product.sku}"></td>
+                        <td class="px-4 py-3 text-right text-gray-600 text-xs"
+                            th:text="${#numbers.formatDecimal(item.unitPrice,0,'COMMA',0,'POINT')}"></td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="badge-modern badge-success-modern text-xs"
+                                  th:text="${item.quantity}"></span>
+                        </td>
+                        <td class="px-4 py-3 text-right font-bold text-green-600"
+                            th:text="${#numbers.formatDecimal(item.subtotal,0,'COMMA',0,'POINT')} + ' ₫'"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Item Cards -->
+        <div class="sm:hidden space-y-3">
+            <div th:each="item, stat : ${order.items}"
+                 class="p-4 bg-gradient-to-br from-gray-50 to-purple-50 rounded-xl border border-purple-100">
+                <div class="flex justify-between items-start gap-2 mb-2">
+                    <div class="min-w-0 flex-1">
+                        <p class="font-bold text-gray-800 text-sm leading-tight" th:text="${item.product.name}"></p>
+                        <p class="text-xs text-gray-400 font-mono mt-0.5" th:text="${item.product.sku}"></p>
+                    </div>
+                    <span class="badge-modern badge-success-modern text-xs flex-shrink-0">
+                        ×<span th:text="${item.quantity}"></span>
+                    </span>
+                </div>
+                <div class="flex justify-between items-center text-sm mt-2 pt-2 border-t border-purple-100">
+                    <span class="text-gray-400 text-xs"
+                          th:text="'Unit: ' + ${#numbers.formatDecimal(item.unitPrice,0,'COMMA',0,'POINT')} + ' ₫'"></span>
+                    <span class="font-bold text-green-600"
+                          th:text="${#numbers.formatDecimal(item.subtotal,0,'COMMA',0,'POINT')} + ' ₫'"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="mt-5 p-5 gradient-bg rounded-xl flex justify-between items-center">
+            <span class="text-white font-bold text-base">
+                <i class="fas fa-receipt mr-2"></i>Total Amount
+            </span>
+            <div class="text-right">
+                <p class="text-white font-bold text-2xl leading-tight">
+                    <span th:text="${#numbers.formatDecimal(order.totalAmount,0,'COMMA',0,'POINT')}"></span>
+                    <span class="text-sm font-normal opacity-80"> VND</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <a th:href="@{/admin/orders}"
+       class="btn-modern btn-primary-modern w-full text-center block fade-in">
+        <i class="fas fa-arrow-left mr-2"></i>Back to Orders
+    </a>
+
+</div>
+
+<footer th:replace="~{fragments/footer :: footer-admin}"></footer>
+
+</body>
+</html>

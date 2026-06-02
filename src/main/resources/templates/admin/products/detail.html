@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head(title='Product Detail')}"></head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+
+<!-- Admin Navigation -->
+<nav th:replace="~{fragments/nav-admin :: nav-admin}"></nav>
+
+<div class="container mx-auto px-4 pb-8 max-w-2xl">
+
+    <!-- Page Header -->
+    <div class="flex items-center gap-4 mb-6 fade-in">
+        <a th:href="@{/admin/products}" class="btn-modern bg-white/10 text-white text-sm">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1 class="text-3xl font-bold text-white">
+            <i class="fas fa-box"></i> Product Detail
+        </h1>
+    </div>
+
+    <!-- Product Card -->
+    <div class="product-card fade-in mb-6">
+
+        <!-- Product Header -->
+        <div class="flex justify-between items-start mb-6">
+            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                <i class="fas fa-box text-white text-3xl"></i>
+            </div>
+            <span th:class="${product.status.name() == 'ACTIVE'} ? 'badge-modern badge-success-modern' : 'badge-modern badge-inactive-modern'"
+                  th:text="${product.status}"></span>
+        </div>
+
+        <!-- Product Name -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-1" th:text="${product.name}"></h2>
+        <p class="text-gray-500 font-mono text-sm mb-6">SKU: <span th:text="${product.sku}"></span></p>
+
+        <!-- Info Grid -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <!-- Price -->
+            <div class="p-4 bg-gradient-to-br from-green-50 to-teal-50 rounded-xl">
+                <p class="text-xs text-gray-500 mb-1"><i class="fas fa-tag"></i> Price</p>
+                <p class="text-2xl font-bold text-green-600">
+                    <span th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')}"></span>
+                    <span class="text-sm font-normal">VND</span>
+                </p>
+            </div>
+            <!-- Stock -->
+            <div class="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+                <p class="text-xs text-gray-500 mb-1"><i class="fas fa-warehouse"></i> Stock</p>
+                <p class="text-2xl font-bold text-blue-600" th:text="${product.stockQuantity}"></p>
+            </div>
+            <!-- Created -->
+            <div class="p-4 bg-gray-50 rounded-xl">
+                <p class="text-xs text-gray-500 mb-1"><i class="far fa-calendar-plus"></i> Created</p>
+                <p class="text-sm font-semibold text-gray-700"
+                   th:text="${#temporals.format(product.createdAt,'dd/MM/yyyy HH:mm')}"></p>
+            </div>
+            <!-- Updated -->
+            <div class="p-4 bg-gray-50 rounded-xl">
+                <p class="text-xs text-gray-500 mb-1"><i class="far fa-calendar-check"></i> Updated</p>
+                <p class="text-sm font-semibold text-gray-700"
+                   th:text="${#temporals.format(product.updatedAt,'dd/MM/yyyy HH:mm')}"></p>
+            </div>
+        </div>
+
+        <!-- ID -->
+        <div class="p-3 bg-gray-50 rounded-lg text-sm text-gray-500">
+            <i class="fas fa-fingerprint mr-1"></i> ID: <span class="font-mono font-bold text-gray-700" th:text="${product.id}"></span>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-3 fade-in">
+        <a th:href="@{/admin/products/{id}/edit(id=${product.id})}"
+           class="btn-modern bg-yellow-500 text-white flex-1 text-center">
+            <i class="fas fa-edit mr-2"></i>Edit Product
+        </a>
+        <a th:href="@{/admin/products}" class="btn-modern bg-white/10 text-white flex-1 text-center">
+            <i class="fas fa-list mr-2"></i>All Products
+        </a>
+    </div>
+
+</div>
+
+<footer th:replace="~{fragments/footer :: footer-admin}"></footer>
+
+</body>
+</html>

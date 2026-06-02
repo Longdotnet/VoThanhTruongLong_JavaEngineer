@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head(title=${productId != null} ? 'Edit Product' : 'New Product')}"></head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen">
+
+<!-- Admin Navigation -->
+<nav th:replace="~{fragments/nav-admin :: nav-admin}"></nav>
+
+<div class="container mx-auto px-4 pb-8 max-w-xl">
+
+    <!-- Page Header -->
+    <div class="flex items-center gap-4 mb-6 fade-in">
+        <a th:href="@{/admin/products}" class="btn-modern bg-white/10 text-white text-sm">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1 class="text-3xl font-bold text-white">
+            <i th:class="${productId != null} ? 'fas fa-edit' : 'fas fa-plus-circle'"></i>
+            <span th:text="${productId != null} ? 'Edit Product' : 'Add New Product'"></span>
+        </h1>
+    </div>
+
+    <!-- Form Card -->
+    <div class="glass-card-dark p-8 rounded-2xl shadow-2xl fade-in">
+
+        <!-- Error Message -->
+        <div th:if="${errorMessage}" class="alert-modern alert-danger-modern mb-6">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <form th:action="${productId != null} ? @{/admin/products/{id}(id=${productId})} : @{/admin/products}"
+              th:object="${productRequest}" method="post"
+              class="space-y-5">
+
+            <!-- Product Name - maxlength=50 synced with @Size(max=50) in ProductRequest -->
+            <div>
+                <label for="name" class="block text-white font-semibold mb-2">
+                    <i class="fas fa-tag"></i> Product Name *
+                </label>
+                <input type="text" id="name"
+                       class="input-modern"
+                       th:field="*{name}"
+                       th:classappend="${#fields.hasErrors('name')} ? 'border-red-500'"
+                       placeholder="Enter product name"
+                       maxlength="50">
+                <div class="flex justify-between mt-1">
+                    <p class="text-red-400 text-xs" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                    <p class="text-gray-400 text-xs ml-auto">Max 50 characters</p>
+                </div>
+            </div>
+
+            <!-- SKU - maxlength=50 synced with @Size(max=50) in ProductRequest -->
+            <div>
+                <label for="sku" class="block text-white font-semibold mb-2">
+                    <i class="fas fa-barcode"></i> SKU *
+                </label>
+                <input type="text" id="sku"
+                       class="input-modern font-mono"
+                       th:field="*{sku}"
+                       th:classappend="${#fields.hasErrors('sku')} ? 'border-red-500'"
+                       placeholder="e.g. SKU-001"
+                       maxlength="50"
+                       pattern="[A-Za-z0-9\-_]+">
+                <div class="flex justify-between mt-1">
+                    <p class="text-red-400 text-xs" th:if="${#fields.hasErrors('sku')}" th:errors="*{sku}"></p>
+                    <p class="text-gray-400 text-xs ml-auto">Letters, numbers, hyphens only. Max 50</p>
+                </div>
+            </div>
+
+            <!-- Price - max synced with @DecimalMax in ProductRequest -->
+            <div>
+                <label for="price" class="block text-white font-semibold mb-2">
+                    <i class="fas fa-dollar-sign"></i> Price (VND) *
+                </label>
+                <div class="relative">
+                    <input type="number" id="price"
+                           step="0.01" min="0.01" max="999999999.99"
+                           class="input-modern pr-16"
+                           th:field="*{price}"
+                           th:classappend="${#fields.hasErrors('price')} ? 'border-red-500'"
+                           placeholder="0">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">VND</span>
+                </div>
+                <p class="text-red-400 text-xs mt-1" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+            </div>
+
+            <!-- Stock - max synced with @Max(999999) in ProductRequest -->
+            <div>
+                <label for="stockQuantity" class="block text-white font-semibold mb-2">
+                    <i class="fas fa-warehouse"></i> Stock Quantity *
+                </label>
+                <input type="number" id="stockQuantity"
+                       class="input-modern"
+                       th:field="*{stockQuantity}"
+                       th:classappend="${#fields.hasErrors('stockQuantity')} ? 'border-red-500'"
+                       placeholder="0"
+                       min="0" max="999999">
+                <p class="text-red-400 text-xs mt-1" th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}"></p>
+            </div>
+
+            <hr class="border-gray-600">
+
+            <!-- Buttons -->
+            <div class="flex gap-3 pt-2">
+                <button type="submit"
+                        class="btn-modern btn-success-modern flex-1"
+                        th:text="${productId != null} ? 'Update Product' : 'Create Product'">
+                </button>
+                <a th:href="@{/admin/products}"
+                   class="btn-modern bg-white/10 text-white flex-1 text-center">
+                    <i class="fas fa-times mr-1"></i> Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer-admin}"></footer>
+
+</body>
+</html>
