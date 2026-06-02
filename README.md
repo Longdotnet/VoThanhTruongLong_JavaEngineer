@@ -10,29 +10,23 @@
 
 Web-based retail order management system built with **Spring Boot 3** + **Thymeleaf** + **PostgreSQL**.
 
-# USER
+**USER**
 <img width="1912" height="995" alt="image" src="https://github.com/user-attachments/assets/85153022-b024-419f-92a6-520978c0270b" />
 <img width="1908" height="1011" alt="image" src="https://github.com/user-attachments/assets/b27c5bb0-8b1b-4829-9988-2e82ff5bcbb1" />
 <img width="1913" height="933" alt="image" src="https://github.com/user-attachments/assets/6236bdd4-a19b-46b9-95fa-e11522f95862" />
 
-# PRODUCTS
+**PRODUCTS**
+<img width="1890" height="600" alt="image" src="https://github.com/user-attachments/assets/2da388d6-9c3d-460c-bceb-3ed00620728c" />
 <img width="1906" height="956" alt="image" src="https://github.com/user-attachments/assets/d7c300d1-08df-40bf-a80b-a46700af41fe" />
 <img width="1891" height="953" alt="image" src="https://github.com/user-attachments/assets/d2ad4275-997b-4e75-8dcb-b00c11a7378c" />
-<img width="1890" height="600" alt="image" src="https://github.com/user-attachments/assets/2da388d6-9c3d-460c-bceb-3ed00620728c" />
-
 <img width="1877" height="957" alt="image" src="https://github.com/user-attachments/assets/11b76795-078a-4639-9c89-565a0266fb08" />
 <img width="1918" height="962" alt="image" src="https://github.com/user-attachments/assets/a01dba88-2972-49b4-9a08-4698b771b983" />  
 <img width="1901" height="957" alt="image" src="https://github.com/user-attachments/assets/4f215650-307e-4b81-937d-7efdca67575e" />
-# ORDER
+
+**ORDER**
 <img width="1895" height="973" alt="image" src="https://github.com/user-attachments/assets/b43c8389-e9db-4ff8-af42-0712be2f105f" />
 <img width="1812" height="902" alt="image" src="https://github.com/user-attachments/assets/7b6edf23-6ab5-490e-b592-f3946837f0a6" />
 <img width="1911" height="878" alt="image" src="https://github.com/user-attachments/assets/d612a199-34f4-47ad-827d-d5601b57670a" />
-
-
-
-
-
-
 
 ---
 
