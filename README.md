@@ -1,9 +1,4 @@
 # 7-Eleven Vietnam — Retail Order Management System
-
-**Technical Test Submission**  
-**Candidate:** Vo Thanh Truong Long  
-**Position:** Fresher Java Engineer  
-
 ---
 
 ## 📋 Overview
@@ -208,4 +203,3 @@ src/main/java/com/seveneleven/
 📞 0364964897  
 ✉️ longvo04100000@gmail.com
 
-**Applied for:** Fresher Java Engineer — 7-Eleven Vietnam
