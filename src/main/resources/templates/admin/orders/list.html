@@ -204,17 +204,44 @@
 
     <!-- Pagination -->
     <div th:if="${totalPages > 1}" class="flex justify-center items-center gap-2 mt-10 fade-in flex-wrap">
+        <!-- Previous Button -->
         <a th:if="${currentPage > 0}"
            th:href="@{/admin/orders(page=${currentPage - 1})}"
            class="btn-modern glass-card-dark text-white text-sm flex items-center gap-1">
             <i class="fas fa-chevron-left text-xs"></i> Prev
         </a>
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+
+        <!-- First Page -->
+        <a th:href="@{/admin/orders(page=0)}"
+           th:class="${currentPage == 0} ? 'btn-modern btn-primary-modern text-sm' : 'btn-modern glass-card-dark text-white text-sm'">
+            1
+        </a>
+
+        <!-- Left Ellipsis -->
+        <span th:if="${currentPage > 3}" class="text-white px-2">...</span>
+
+        <!-- Pages around current page -->
+        <span th:each="i : ${#numbers.sequence(
+            (currentPage - 1 < 1 ? 1 : currentPage - 1),
+            (currentPage + 1 >= totalPages - 1 ? totalPages - 2 : currentPage + 1)
+        )}" th:if="${i >= 1 and i < totalPages - 1}">
             <a th:href="@{/admin/orders(page=${i})}"
                th:text="${i + 1}"
                th:class="${i == currentPage} ? 'btn-modern btn-primary-modern text-sm' : 'btn-modern glass-card-dark text-white text-sm'">
             </a>
         </span>
+
+        <!-- Right Ellipsis -->
+        <span th:if="${currentPage < totalPages - 4}" class="text-white px-2">...</span>
+
+        <!-- Last Page -->
+        <a th:if="${totalPages > 1}"
+           th:href="@{/admin/orders(page=${totalPages - 1})}"
+           th:text="${totalPages}"
+           th:class="${currentPage == totalPages - 1} ? 'btn-modern btn-primary-modern text-sm' : 'btn-modern glass-card-dark text-white text-sm'">
+        </a>
+
+        <!-- Next Button -->
         <a th:if="${currentPage < totalPages - 1}"
            th:href="@{/admin/orders(page=${currentPage + 1})}"
            class="btn-modern glass-card-dark text-white text-sm flex items-center gap-1">

@@ -155,17 +155,44 @@
 
     <!-- Pagination -->
     <div th:if="${totalPages != null and totalPages > 1}" class="flex justify-center items-center gap-2 mt-8 fade-in">
+        <!-- Previous Button -->
         <a th:if="${currentPage > 0}"
            th:href="@{/admin/products(page=${currentPage - 1})}"
            class="btn-modern bg-white/10 text-white text-sm">
             <i class="fas fa-chevron-left"></i> Prev
         </a>
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+
+        <!-- First Page -->
+        <a th:href="@{/admin/products(page=0)}"
+           th:class="${currentPage == 0} ? 'btn-modern bg-purple-600 text-white text-sm' : 'btn-modern bg-white/10 text-white text-sm'">
+            1
+        </a>
+
+        <!-- Left Ellipsis -->
+        <span th:if="${currentPage > 3}" class="text-white px-2">...</span>
+
+        <!-- Pages around current page -->
+        <span th:each="i : ${#numbers.sequence(
+            (currentPage - 1 < 1 ? 1 : currentPage - 1),
+            (currentPage + 1 >= totalPages - 1 ? totalPages - 2 : currentPage + 1)
+        )}" th:if="${i >= 1 and i < totalPages - 1}">
             <a th:href="@{/admin/products(page=${i})}"
                th:text="${i + 1}"
                th:class="${i == currentPage} ? 'btn-modern bg-purple-600 text-white text-sm' : 'btn-modern bg-white/10 text-white text-sm'">
             </a>
         </span>
+
+        <!-- Right Ellipsis -->
+        <span th:if="${currentPage < totalPages - 4}" class="text-white px-2">...</span>
+
+        <!-- Last Page -->
+        <a th:if="${totalPages > 1}"
+           th:href="@{/admin/products(page=${totalPages - 1})}"
+           th:text="${totalPages}"
+           th:class="${currentPage == totalPages - 1} ? 'btn-modern bg-purple-600 text-white text-sm' : 'btn-modern bg-white/10 text-white text-sm'">
+        </a>
+
+        <!-- Next Button -->
         <a th:if="${currentPage < totalPages - 1}"
            th:href="@{/admin/products(page=${currentPage + 1})}"
            class="btn-modern bg-white/10 text-white text-sm">
